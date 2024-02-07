@@ -1,23 +1,44 @@
-import logo from './logo.svg';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
+import { useRef, useState } from 'react';
 
 function App() {
+  const inputRef = useRef(null);
+
+  const [tasks, setTasks] = useState([]);
+
+  function addTask() {
+    const newTask = {
+      id: uuidv4(),
+      description: inputRef.current.value,
+    }
+
+    const newTasks = [newTask, ...tasks];
+    setTasks(newTasks)
+  }
+
+  function deleteTask(task) {
+    const newTasks = tasks.filter(t => t != task)
+
+    setTasks(newTasks)
+  }
+
+  function editTask(task) {}
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input ref={inputRef} name='todo_input' />
+
+      <button onClick={addTask}>Add</button>
+
+      {tasks.map((task, index) => (
+        <div key={index}>
+          <span>{task.description}</span>
+          <button onClick={() => deleteTask(task)}>Delete</button>
+          <button onClick={() => editTask(task)}>Edit</button>
+          <br />
+        </div>
+      ))}
     </div>
   );
 }
